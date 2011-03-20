@@ -16,14 +16,99 @@
 #include <GL/glut.h>
 #endif
 
+GLfloat blockSize = 0.3f;
+
 GLBatch triangleBatch;
 GLBatch triangleBatch2;
 GLBatch triangleBatch3;
 GLShaderManager shaderManager;
 
+GLfloat vVerts[] =  { 
+  -blockSize, 0.0f, 0.0f,
+  blockSize, 0.0f, 0.0f,
+  0.0f, ( blockSize * 2 ), 0.0f
+};
+
+GLfloat vVerts2[] =  { 
+  -( blockSize * 2 ), -( blockSize * 2 ), 0.0f,
+  0.0f, -( blockSize * 2 ), 0.0f,
+  -blockSize, 0.0f, 0.0f
+};
+
+GLfloat vVerts3[] =  { 
+  0.0f, -( blockSize * 2 ), 0.0f,
+  ( blockSize * 2 ), -( blockSize * 2 ), 0.0f,
+  blockSize, 0.0f, 0.0f
+};
+
 void ChangeSize( int w, int h )
 {
   glViewport(0, 0, w, h);
+}
+
+// Respond to arrow keys by moving the camera frame of reference
+void SpecialKeys(int key, int x, int y)
+{
+	GLfloat stepSize = 0.025f;
+  
+	GLfloat blockX = vVerts2[0];   // Upper left X
+	GLfloat blockY = vVerts[7];  // Upper left Y
+  
+	if(key == GLUT_KEY_UP)
+		blockY += stepSize;
+  
+	if(key == GLUT_KEY_DOWN)
+		blockY -= stepSize;
+	
+	if(key == GLUT_KEY_LEFT)
+		blockX -= stepSize;
+  
+	if(key == GLUT_KEY_RIGHT)
+		blockX += stepSize;
+  
+	// Collision detection
+	if(blockX < -1.0f) blockX = -1.0f;
+	if(blockX > (1.0f - blockSize * 4)) blockX = 1.0f - blockSize * 4;
+	if(blockY < -1.0f + blockSize * 4)  blockY = -1.0f + blockSize * 4;
+	if(blockY > 1.0f) blockY = 1.0f;
+  
+	// Recalculate vertex positions
+  
+  //Triangle 1
+	vVerts[0] = blockX + blockSize;
+	vVerts[1] = blockY - ( blockSize * 2 );
+	
+	vVerts[3] = blockX + ( blockSize * 3 );
+	vVerts[4] = blockY - ( blockSize * 2 );
+	
+	vVerts[6] = blockX + ( blockSize * 2 );
+	vVerts[7] = blockY;
+  
+  //Triangle 2
+  vVerts2[0] = blockX;
+	vVerts2[1] = blockY - ( blockSize * 4 );
+	
+	vVerts2[3] = blockX + ( blockSize * 2 );
+	vVerts2[4] = blockY - ( blockSize * 4 );
+	
+	vVerts2[6] = blockX + blockSize;
+	vVerts2[7] = blockY - ( blockSize * 2 );
+  
+  //Triangle 3
+  vVerts3[0] = blockX + ( blockSize * 2 );
+	vVerts3[1] = blockY - ( blockSize * 4 );
+	
+	vVerts3[3] = blockX + ( blockSize * 4 );
+	vVerts3[4] = blockY - ( blockSize * 4 );
+	
+	vVerts3[6] = blockX + ( blockSize * 3 );
+	vVerts3[7] = blockY - ( blockSize * 2 );
+  
+	triangleBatch.CopyVertexData3f(vVerts);
+	triangleBatch2.CopyVertexData3f(vVerts2);
+	triangleBatch3.CopyVertexData3f(vVerts3);
+  
+	glutPostRedisplay();
 }
 
 void SetupRC( )
@@ -34,24 +119,6 @@ void SetupRC( )
   shaderManager.InitializeStockShaders( );
 
   // Load up a triangle
-  GLfloat vVerts[] =  { 
-    -0.5f, 0.0f, 0.0f,
-    0.5f, 0.0f, 0.0f,
-    0.0f, 1.0f, 0.0f
-  };
-  
-  GLfloat vVerts2[] =  { 
-    -1.0f, -1.0f, 0.0f,
-    0.0f, -1.0f, 0.0f,
-    -0.5f, 0.0f, 0.0f
-  };
-  
-  GLfloat vVerts3[] =  { 
-    0.0f, -1.0f, 0.0f,
-    1.0f, -1.0f, 0.0f,
-    0.5f, 0.0f, 0.0f
-  };
-
   triangleBatch.Begin( GL_TRIANGLES, 3 );
   triangleBatch.CopyVertexData3f( vVerts );
   triangleBatch.End( );
@@ -79,6 +146,8 @@ void RenderScene( void )
   glutSwapBuffers( );
 }
 
+
+
 int main( int argc, char* argv[] )
 {
   gltSetWorkingDirectory( argv[0] );
@@ -89,7 +158,8 @@ int main( int argc, char* argv[] )
   glutCreateWindow( "Triangle" );
   glutReshapeFunc( ChangeSize );
   glutDisplayFunc( RenderScene );
-  
+  glutSpecialFunc(SpecialKeys);
+
   GLenum err = glewInit( );
   
   if ( GLEW_OK != err )
