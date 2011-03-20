@@ -49,66 +49,62 @@ void ChangeSize( int w, int h )
 // Respond to arrow keys by moving the camera frame of reference
 void SpecialKeys(int key, int x, int y)
 {
-	GLfloat stepSize = 0.025f;
+  GLfloat stepSize = 0.025f;
   
-	GLfloat blockX = vVerts2[0];   // Upper left X
-	GLfloat blockY = vVerts[7];  // Upper left Y
+  GLfloat blockX = vVerts2[0];   // Upper left X
+  GLfloat blockY = vVerts[7];  // Upper left Y
   
-	if(key == GLUT_KEY_UP)
-		blockY += stepSize;
+  if( key == GLUT_KEY_UP ) blockY += stepSize;
   
-	if(key == GLUT_KEY_DOWN)
-		blockY -= stepSize;
+  if( key == GLUT_KEY_DOWN ) blockY -= stepSize;
 	
-	if(key == GLUT_KEY_LEFT)
-		blockX -= stepSize;
+  if( key == GLUT_KEY_LEFT ) blockX -= stepSize;
   
-	if(key == GLUT_KEY_RIGHT)
-		blockX += stepSize;
+  if( key == GLUT_KEY_RIGHT ) blockX += stepSize;
   
-	// Collision detection
-	if(blockX < -1.0f) blockX = -1.0f;
-	if(blockX > (1.0f - blockSize * 4)) blockX = 1.0f - blockSize * 4;
-	if(blockY < -1.0f + blockSize * 4)  blockY = -1.0f + blockSize * 4;
-	if(blockY > 1.0f) blockY = 1.0f;
+  // Collision detection
+  if( blockX < -1.0f ) blockX = -1.0f;
+  if( blockX > ( 1.0f - blockSize * 4 ) ) blockX = 1.0f - blockSize * 4;
+  if( blockY < -1.0f + blockSize * 4 )  blockY = -1.0f + blockSize * 4;
+  if( blockY > 1.0f ) blockY = 1.0f;
   
-	// Recalculate vertex positions
+  // Recalculate vertex positions
   
   //Triangle 1
-	vVerts[0] = blockX + blockSize;
-	vVerts[1] = blockY - ( blockSize * 2 );
+  vVerts[0] = blockX + blockSize;
+  vVerts[1] = blockY - ( blockSize * 2 );
 	
-	vVerts[3] = blockX + ( blockSize * 3 );
-	vVerts[4] = blockY - ( blockSize * 2 );
+  vVerts[3] = blockX + ( blockSize * 3 );
+  vVerts[4] = blockY - ( blockSize * 2 );
 	
-	vVerts[6] = blockX + ( blockSize * 2 );
-	vVerts[7] = blockY;
+  vVerts[6] = blockX + ( blockSize * 2 );
+  vVerts[7] = blockY;
   
   //Triangle 2
   vVerts2[0] = blockX;
-	vVerts2[1] = blockY - ( blockSize * 4 );
+  vVerts2[1] = blockY - ( blockSize * 4 );
 	
-	vVerts2[3] = blockX + ( blockSize * 2 );
-	vVerts2[4] = blockY - ( blockSize * 4 );
+  vVerts2[3] = blockX + ( blockSize * 2 );
+  vVerts2[4] = blockY - ( blockSize * 4 );
 	
-	vVerts2[6] = blockX + blockSize;
-	vVerts2[7] = blockY - ( blockSize * 2 );
+  vVerts2[6] = blockX + blockSize;
+  vVerts2[7] = blockY - ( blockSize * 2 );
   
   //Triangle 3
   vVerts3[0] = blockX + ( blockSize * 2 );
-	vVerts3[1] = blockY - ( blockSize * 4 );
+  vVerts3[1] = blockY - ( blockSize * 4 );
 	
-	vVerts3[3] = blockX + ( blockSize * 4 );
-	vVerts3[4] = blockY - ( blockSize * 4 );
+  vVerts3[3] = blockX + ( blockSize * 4 );
+  vVerts3[4] = blockY - ( blockSize * 4 );
 	
-	vVerts3[6] = blockX + ( blockSize * 3 );
-	vVerts3[7] = blockY - ( blockSize * 2 );
+  vVerts3[6] = blockX + ( blockSize * 3 );
+  vVerts3[7] = blockY - ( blockSize * 2 );
   
-	triangleBatch.CopyVertexData3f(vVerts);
-	triangleBatch2.CopyVertexData3f(vVerts2);
-	triangleBatch3.CopyVertexData3f(vVerts3);
+  triangleBatch.CopyVertexData3f( vVerts );
+  triangleBatch2.CopyVertexData3f( vVerts2 );
+  triangleBatch3.CopyVertexData3f( vVerts3 );
   
-	glutPostRedisplay();
+  glutPostRedisplay( );
 }
 
 void SetupRC( )
@@ -158,7 +154,7 @@ int main( int argc, char* argv[] )
   glutCreateWindow( "Triangle" );
   glutReshapeFunc( ChangeSize );
   glutDisplayFunc( RenderScene );
-  glutSpecialFunc(SpecialKeys);
+  glutSpecialFunc( SpecialKeys );
 
   GLenum err = glewInit( );
   
