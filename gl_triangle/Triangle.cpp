@@ -47,26 +47,24 @@ void ChangeSize( int w, int h )
 }
 
 // Respond to arrow keys by moving the camera frame of reference
-void SpecialKeys(int key, int x, int y)
-{
-  GLfloat stepSize = 0.025f;
-  
+void BounceTri(void)
+{  
   GLfloat blockX = vVerts2[0];   // Upper left X
   GLfloat blockY = vVerts[7];  // Upper left Y
   
-  if( key == GLUT_KEY_UP ) blockY += stepSize;
+	static GLfloat xDir = 0.5f;
+	static GLfloat yDir = 0.4f;
   
-  if( key == GLUT_KEY_DOWN ) blockY -= stepSize;
-	
-  if( key == GLUT_KEY_LEFT ) blockX -= stepSize;
+	GLfloat stepSize = 0.002f;
   
-  if( key == GLUT_KEY_RIGHT ) blockX += stepSize;
+  blockY += stepSize * yDir;
+	blockX += stepSize * xDir;
   
   // Collision detection
-  if( blockX < -1.0f ) blockX = -1.0f;
-  if( blockX > ( 1.0f - blockSize * 4 ) ) blockX = 1.0f - blockSize * 4;
-  if( blockY < -1.0f + blockSize * 4 )  blockY = -1.0f + blockSize * 4;
-  if( blockY > 1.0f ) blockY = 1.0f;
+	if(blockX < -1.0f) { blockX = -1.0f; xDir *= -1.0f; }
+	if(blockX > (1.0f - blockSize * 4)) { blockX = 1.0f - blockSize * 4; xDir *= -1.0f; }
+	if(blockY < -1.0f + blockSize * 4)  { blockY = -1.0f + blockSize * 4; yDir *= -1.0f; }
+	if(blockY > 1.0f) { blockY = 1.0f; yDir *= -1.0f; }
   
   // Recalculate vertex positions
   
@@ -102,9 +100,7 @@ void SpecialKeys(int key, int x, int y)
   
   triangleBatch.CopyVertexData3f( vVerts );
   triangleBatch2.CopyVertexData3f( vVerts2 );
-  triangleBatch3.CopyVertexData3f( vVerts3 );
-  
-  glutPostRedisplay( );
+  triangleBatch3.CopyVertexData3f( vVerts3 );  
 }
 
 void SetupRC( )
@@ -140,6 +136,9 @@ void RenderScene( void )
   
   // Buffer swap and display back buffer
   glutSwapBuffers( );
+  
+  BounceTri( );
+	glutPostRedisplay( ); // Redraw
 }
 
 
@@ -154,7 +153,6 @@ int main( int argc, char* argv[] )
   glutCreateWindow( "Triangle" );
   glutReshapeFunc( ChangeSize );
   glutDisplayFunc( RenderScene );
-  glutSpecialFunc( SpecialKeys );
 
   GLenum err = glewInit( );
   
