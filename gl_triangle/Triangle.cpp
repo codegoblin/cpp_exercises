@@ -43,11 +43,11 @@ GLfloat vVerts3[] =  {
 
 void ChangeSize( int w, int h )
 {
-  glViewport(0, 0, w, h);
+  glViewport( 0, 0, w, h );
 }
 
 // Respond to arrow keys by moving the camera frame of reference
-void BounceTri(void)
+void BounceTri( void )
 {  
   GLfloat blockX = vVerts2[0];   // Upper left X
   GLfloat blockY = vVerts[7];  // Upper left Y
@@ -61,10 +61,10 @@ void BounceTri(void)
 	blockX += stepSize * xDir;
   
   // Collision detection
-	if(blockX < -1.0f) { blockX = -1.0f; xDir *= -1.0f; }
-	if(blockX > (1.0f - blockSize * 4)) { blockX = 1.0f - blockSize * 4; xDir *= -1.0f; }
-	if(blockY < -1.0f + blockSize * 4)  { blockY = -1.0f + blockSize * 4; yDir *= -1.0f; }
-	if(blockY > 1.0f) { blockY = 1.0f; yDir *= -1.0f; }
+	if( blockX < -1.0f ) { blockX = -1.0f; xDir *= -1.0f; }
+	if( blockX > ( 1.0f - blockSize * 4 ) ) { blockX = 1.0f - blockSize * 4; xDir *= -1.0f; }
+	if( blockY < -1.0f + blockSize * 4 )  { blockY = -1.0f + blockSize * 4; yDir *= -1.0f; }
+	if( blockY > 1.0f ) { blockY = 1.0f; yDir *= -1.0f; }
   
   // Recalculate vertex positions
   
